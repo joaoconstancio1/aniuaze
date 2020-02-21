@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "174048465021",
+    "firebase_url": "https://aniuaze-ebc51.firebaseio.com",
+    "project_id": "aniuaze-ebc51",
+    "storage_bucket": "aniuaze-ebc51.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:174048465021:android:77588e3939cf03ae2ee114",
+        "android_client_info": {
+          "package_name": "br.com.constancio.aniuaze"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "174048465021-2ks1dr1b6m2986o5eo61m3v1bka3r03g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAL9lTFjvxUnDrczNy2cgughNT4A9yrDKo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "174048465021-2ks1dr1b6m2986o5eo61m3v1bka3r03g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
