@@ -65,6 +65,7 @@ class AnimalBloc extends BlocBase {
       return true;
     } catch (e) {
       _loadingController.add(false);
+      print('MERDA DE ERRO DO ANIMAL BLOC >>>>> ${e}');
       return false;
     }
   }
