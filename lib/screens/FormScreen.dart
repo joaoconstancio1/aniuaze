@@ -1,4 +1,5 @@
 import 'package:aniuaze/blocs/animal_bloc.dart';
+import 'package:aniuaze/screens/home_screen.dart';
 
 import 'package:aniuaze/widgets/images_widget.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,36 @@ class _FormScreenState extends State<FormScreen> {
   final AnimalBloc _animalBloc;
 
   _FormScreenState() : _animalBloc = AnimalBloc();
+
+  List<Porte> _portes = Porte.getCompanies();
+  List<DropdownMenuItem<Porte>> _dropdownMenuItems;
+  Porte _selectedPorte;
+
+  @override
+  void initState() {
+    _dropdownMenuItems = buildDropdownMenuItems(_portes);
+    _selectedPorte = _dropdownMenuItems[0].value;
+    super.initState();
+  }
+
+  List<DropdownMenuItem<Porte>> buildDropdownMenuItems(List portes) {
+    List<DropdownMenuItem<Porte>> items = List();
+    for (Porte porte in portes) {
+      items.add(
+        DropdownMenuItem(
+          value: porte,
+          child: Text(porte.name),
+        ),
+      );
+    }
+    return items;
+  }
+
+  onChangeDropdownItem(Porte selectedPorte) {
+    setState(() {
+      _selectedPorte = selectedPorte;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,12 +104,17 @@ class _FormScreenState extends State<FormScreen> {
                           onSaved: _animalBloc.saveNome,
                           validator: _validateName,
                         ),
-                        TextFormField(
-                          initialValue: snapshot.data["porte"],
-                          style: _fieldStyle,
-                          decoration: _buildDecoration("Porte"),
-                          onSaved: _animalBloc.savePorte,
-                          validator: _validatePorte,
+                        SizedBox(
+                          height: 30,
+                        ),
+                        Text("Selecione o Porte"),
+                        SizedBox(
+                          height: 10.0,
+                        ),
+                        DropdownButton(
+                          value: _selectedPorte,
+                          items: _dropdownMenuItems,
+                          onChanged: onChangeDropdownItem,
                         ),
                         TextFormField(
                           maxLines: 3,
@@ -116,14 +152,10 @@ class _FormScreenState extends State<FormScreen> {
     return null;
   }
 
-  String _validatePorte(String text) {
-    if (text.isEmpty) return "Informe o Porte do Animal";
-    return null;
-  }
-
   void saveAnimal() async {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
+      _animalBloc.savePorte(_selectedPorte.name);
 
       _scaffoldKey.currentState.showSnackBar(SnackBar(
         content: Text(
@@ -138,17 +170,22 @@ class _FormScreenState extends State<FormScreen> {
 
       _scaffoldKey.currentState.removeCurrentSnackBar();
 
-      _scaffoldKey.currentState.showSnackBar(SnackBar(
-        content: Text(
-          success ? "Animal Cadastrado!" : "Erro ao salvar!",
-          style: TextStyle(color: Colors.white),
-        ),
-        backgroundColor: Theme.of(context).primaryColor,
-      ));
+      if(success == true)
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => HomeScreen(
+              successMsg: "Animal Cadastrado!",
+            )));
+      else{
+        _scaffoldKey.currentState.showSnackBar(SnackBar(
+          content: Text(
+           "Erro ao salvar!",
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Theme.of(context).primaryColor,
+        ));
+      }
     }
   }
-
-  //testando git
 
   InputDecoration _buildDecoration(String label) {
     return InputDecoration(
@@ -156,4 +193,19 @@ class _FormScreenState extends State<FormScreen> {
   }
 
   final _fieldStyle = TextStyle(color: Colors.black, fontSize: 16);
+}
+
+class Porte {
+  int id;
+  String name;
+
+  Porte(this.id, this.name);
+
+  static List<Porte> getCompanies() {
+    return <Porte>[
+      Porte(1, 'Pequeno'),
+      Porte(2, 'Médio'),
+      Porte(3, 'Grande'),
+    ];
+  }
 }
