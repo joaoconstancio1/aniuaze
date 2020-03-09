@@ -98,7 +98,7 @@ class _FormScreenState extends State<FormScreen> {
                           validator: _validateImages,
                         ),
                         TextFormField(
-                          initialValue: snapshot.data["nome"],
+                          initialValue: snapshot.data["name"],
                           style: _fieldStyle,
                           decoration: _buildDecoration("Nome"),
                           onSaved: _animalBloc.saveNome,
