@@ -1,9 +1,11 @@
+import 'package:aniuaze/tiles/animal_tile.dart';
 import 'package:aniuaze/widgets/main_drawer.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
+  String successMsg = '';
 
-  String successMsg;
   HomeScreen({this.successMsg});
 
   @override
@@ -21,25 +23,33 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-    appBar: AppBar(
-      title: Text("Aniuaze"),
-      centerTitle: true,
-    ),
-      drawer: MainDrawer(),
-      body: ListView(
-
-        children: <Widget>[
-          Container(
-            child: Text('AHHHHHHHHH'),
-          ),
-        ],
-      ),
-    );
+    return FutureBuilder<QuerySnapshot>(
+        future: Firestore.instance.collection("animals").getDocuments(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData)
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          else {
+            return Scaffold(
+              key: _scaffoldKey,
+              appBar: AppBar(
+                title: Text("Aniuaze"),
+                centerTitle: true,
+              ),
+              drawer: MainDrawer(),
+              body: ListView(
+                children: snapshot.data.documents.map((doc){
+                  return AnimalTile(doc);
+                }).toList(),
+              ),
+            );
+          }
+        });
   }
-  void showSnackBar(){
-    if(widget.successMsg.length> 0){
+
+  void showSnackBar() {
+    if (widget.successMsg != null) {
       _scaffoldKey.currentState.showSnackBar(SnackBar(
         content: Text(
           widget.successMsg,
@@ -49,8 +59,4 @@ class _HomeScreenState extends State<HomeScreen> {
       ));
     }
   }
-
 }
-
-
-

@@ -59,11 +59,24 @@ class MainDrawer extends StatelessWidget {
               ),
               ListTile(
                 leading: Icon(
-                  Icons.settings,
+                  Icons.library_books,
                   size: 25,
                 ),
                 title: Text(
-                  "Configurações",
+                  "Meus animais",
+                  style: TextStyle(
+                    fontSize: 18,
+                  ),
+                ),
+                //onTap: (){ Navigator.of(context).push(MaterialPageRoute(builder: (context) => SignUpScreen()));},
+              ),
+              ListTile(
+                leading: Icon(
+                  Icons.message,
+                  size: 25,
+                ),
+                title: Text(
+                  "Chat",
                   style: TextStyle(
                     fontSize: 18,
                   ),
