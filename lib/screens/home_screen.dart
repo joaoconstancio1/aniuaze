@@ -17,14 +17,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) => showSnackBar());
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => showSnackBar());
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<QuerySnapshot>(
-        future: Firestore.instance.collection("animals").getDocuments(),
+        future: Firestore.instance
+            .collection("animals")
+            .orderBy("date", descending: true)
+            .getDocuments(),
         builder: (context, snapshot) {
           if (!snapshot.hasData)
             return Center(
@@ -39,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               drawer: MainDrawer(),
               body: ListView(
-                children: snapshot.data.documents.map((doc){
+                children: snapshot.data.documents.map((doc) {
                   return AnimalTile(doc);
                 }).toList(),
               ),

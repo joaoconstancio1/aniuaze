@@ -1,6 +1,8 @@
 import 'package:aniuaze/models/user_model.dart';
-import 'package:aniuaze/screens/FormScreen.dart';
+import 'package:aniuaze/screens/formScreen.dart';
+import 'package:aniuaze/screens/home_screen.dart';
 import 'package:aniuaze/screens/login_screen.dart';
+import 'package:aniuaze/screens/myAnimals.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -26,17 +28,6 @@ class MainDrawer extends StatelessWidget {
                             fontSize: 34.0, fontWeight: FontWeight.bold),
                       ),
                     ),
-                    /*Container(
-                        width: 100,
-                        height: 100,
-                        margin: EdgeInsets.only(top: 30, bottom: 10),
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                                image: NetworkImage(
-                                    "https://static-wp-canalr-prd.canalrural.com.br/2019/02/fcpzzb_abr_070120192595-640x427.jpg"),
-                                fit: BoxFit.fill)),
-                      ),*/
                     Divider(),
                     Text(
                       "${!model.isLoggedIn() ? "" : model.userData["name"]}",
@@ -48,6 +39,14 @@ class MainDrawer extends StatelessWidget {
                     ),
                   ],
                 ),
+              ),
+              ListTile(
+                leading: Icon(
+                  Icons.list,
+                  size: 25,
+                ),
+                title: Text("Todos os Animais", style: TextStyle(fontSize: 18)),
+                onTap: (){ Navigator.of(context).push(MaterialPageRoute(builder: (context) => HomeScreen()));},
               ),
               ListTile(
                 leading: Icon(
@@ -68,7 +67,7 @@ class MainDrawer extends StatelessWidget {
                     fontSize: 18,
                   ),
                 ),
-                //onTap: (){ Navigator.of(context).push(MaterialPageRoute(builder: (context) => SignUpScreen()));},
+                onTap: (){ Navigator.of(context).push(MaterialPageRoute(builder: (context) => MyAnimals()));},
               ),
               ListTile(
                 leading: Icon(

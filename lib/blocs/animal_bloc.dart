@@ -22,9 +22,11 @@ class AnimalBloc extends BlocBase {
     } else {
       unsavedData = {
         "images": [],
-        "nome": null,
+        "name": null,
         "porte": null,
         "description": null,
+        "userId": null,
+        "date": null,
       };
     }
     _dataController.add(unsavedData);
@@ -34,8 +36,8 @@ class AnimalBloc extends BlocBase {
     unsavedData["images"] = images;
   }
 
-  void saveNome(String nome) {
-    unsavedData["nome"] = nome;
+  void saveName(String name) {
+    unsavedData["name"] = name;
   }
 
   void savePorte(String porte) {
@@ -45,6 +47,15 @@ class AnimalBloc extends BlocBase {
   void saveDescription(String description) {
     unsavedData["description"] = description;
   }
+
+  void saveUserId(String userId) {
+    unsavedData["userId"] = userId;
+  }
+  void saveDate(DateTime date) {
+    unsavedData["date"] = date;
+  }
+
+
 
   Future<bool> saveAnimal() async {
     _loadingController.add(true);
@@ -65,7 +76,6 @@ class AnimalBloc extends BlocBase {
       return true;
     } catch (e) {
       _loadingController.add(false);
-      print('MERDA DE ERRO DO ANIMAL BLOC >>>>> ${e}');
       return false;
     }
   }

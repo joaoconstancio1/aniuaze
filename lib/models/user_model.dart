@@ -104,4 +104,18 @@ class UserModel extends Model {
     notifyListeners();
   }
 
+  Future<DocumentSnapshot> getUser()async{
+    DocumentSnapshot retDoc;
+    if(firebaseUser == null)
+      firebaseUser = await _auth.currentUser();
+    if(firebaseUser != null){
+      if(userData["name"] == null){
+        DocumentSnapshot docUser =
+        await Firestore.instance.collection("users").document(firebaseUser.uid).get();
+        retDoc = docUser;
+      }
+    }
+    return retDoc;
+  }
+
 }

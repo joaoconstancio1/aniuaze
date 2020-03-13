@@ -1,5 +1,5 @@
 import 'package:aniuaze/models/user_model.dart';
-import 'package:aniuaze/screens/FormScreen.dart';
+import 'package:aniuaze/screens/formScreen.dart';
 import 'package:aniuaze/screens/home_screen.dart';
 import 'package:aniuaze/screens/login_screen.dart';
 import 'package:aniuaze/screens/signup_screen.dart';
@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
             primaryColor: Colors.green
         ),
         debugShowCheckedModeBanner: false,
-        home: HomeScreen(),
+        home: LoginScreen(),
       ),
     );
   }
