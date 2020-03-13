@@ -1,7 +1,9 @@
 import 'package:aniuaze/blocs/animal_bloc.dart';
+import 'package:aniuaze/models/user_model.dart';
 import 'package:aniuaze/screens/home_screen.dart';
 
 import 'package:aniuaze/widgets/images_widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class FormScreen extends StatefulWidget {
@@ -20,12 +22,18 @@ class _FormScreenState extends State<FormScreen> {
   List<DropdownMenuItem<Porte>> _dropdownMenuItems;
   Porte _selectedPorte;
 
+  DocumentSnapshot userData;
   @override
   void initState() {
     _dropdownMenuItems = buildDropdownMenuItems(_portes);
     _selectedPorte = _dropdownMenuItems[0].value;
+    UserModel().getUser().then((map){
+      userData = map;
+      print(" Esté são os dados ${userData.documentID}");
+    });
     super.initState();
   }
+
 
   List<DropdownMenuItem<Porte>> buildDropdownMenuItems(List portes) {
     List<DropdownMenuItem<Porte>> items = List();
@@ -101,7 +109,7 @@ class _FormScreenState extends State<FormScreen> {
                           initialValue: snapshot.data["name"],
                           style: _fieldStyle,
                           decoration: _buildDecoration("Nome"),
-                          onSaved: _animalBloc.saveNome,
+                          onSaved: _animalBloc.saveName,
                           validator: _validateName,
                         ),
                         SizedBox(
@@ -156,6 +164,8 @@ class _FormScreenState extends State<FormScreen> {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       _animalBloc.savePorte(_selectedPorte.name);
+      _animalBloc.saveUserId(userData.documentID);
+      _animalBloc.saveDate(DateTime.now());
 
       _scaffoldKey.currentState.showSnackBar(SnackBar(
         content: Text(

@@ -36,12 +36,11 @@ class AnimalTile extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Text(
-                  snapshot.data["nome"],
+                  snapshot.data["name"],
                   style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                 ),
                 GestureDetector(
                   onTap: () {
-                    print('cliquei aqui');
                     Navigator.of(context).push(
                         MaterialPageRoute(builder: (context) => AnimalScreen(snapshot)));
                   },

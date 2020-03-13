@@ -11,7 +11,7 @@ class AnimalScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(snapshot.data['nome']),
+        title: Text(snapshot.data['name']),
         centerTitle: true,
       ),
       body: Padding(
@@ -34,7 +34,7 @@ class AnimalScreen extends StatelessWidget {
                 ),
               ),
             ),
-            _buildText('Nome:  ', '${snapshot.data['nome']}'),
+            _buildText('Nome:  ', '${snapshot.data['name']}'),
             _buildText('Porte:  ', '${snapshot.data['porte']}'),
             _buildText('Descrição:  ', '${snapshot.data['description']}'),
           ],
@@ -56,14 +56,17 @@ Container _buildText(text, snapshot) {
       child: Padding(
     padding: const EdgeInsets.symmetric(vertical: 7),
     child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
           text,
           style: TextStyle(fontSize: 16),
         ),
-        Text(
-          snapshot,
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        Expanded(
+          child: Text(
+            snapshot,
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
         ),
       ],
     ),
