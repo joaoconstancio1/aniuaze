@@ -82,21 +82,29 @@ class MainDrawer extends StatelessWidget {
                 ),
                 //onTap: (){ Navigator.of(context).push(MaterialPageRoute(builder: (context) => SignUpScreen()));},
               ),
+
               ListTile(
                 leading: Icon(
                   Icons.arrow_back,
                   size: 25,
                 ),
                 title: Text(
-                  "Sair",
+                  !model.isLoggedIn() ?
+                  "Entre ou cadastre-se"
+                      : "Sair",
                   style: TextStyle(
-                    fontSize: 18,
+                      color: Theme.of(context).primaryColor,
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold
                   ),
                 ),
-                onTap: () {
-                  model.signOut();
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => LoginScreen()));
+                onTap: (){
+                  if(!model.isLoggedIn())
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context)=>LoginScreen())
+                    );
+                  else
+                    model.signOut();
                 },
               ),
             ],

@@ -24,19 +24,32 @@ class _MyAnimalsState extends State<MyAnimals> {
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<UserModel>(
+
         builder: (context, child, model) {
+          if(!model.isLoggedIn()){
+            return Scaffold(
+              appBar: AppBar(
+                title: Text("Meus Animais"),
+                centerTitle: true,
+              ),
+              drawer: MainDrawer(),
+              body: Center(
+                child: Text("Entre ou Cadastre-se,\nPara ver seus animais!",style: TextStyle(fontSize: 17),),
+              )
+            );
+          }
           return FutureBuilder<QuerySnapshot>(
               future: Firestore.instance.collection("animals").where('userId', isEqualTo: model.firebaseUser.uid).orderBy(
                   "name", descending: false).getDocuments(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData)
                   return Center(
-                    child: CircularProgressIndicator(),
+                    child: Container(),
                   );
                 else {
                   return Scaffold(
                       appBar: AppBar(
-                        title: Text("Aniuaze"),
+                        title: Text("Meus Animais"),
                         centerTitle: true,
                       ),
                       drawer: MainDrawer(),

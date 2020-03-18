@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
             primaryColor: Colors.green
         ),
         debugShowCheckedModeBanner: false,
-        home: LoginScreen(),
+        home: HomeScreen(),
       ),
     );
   }

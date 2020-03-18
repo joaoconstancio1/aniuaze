@@ -1,10 +1,11 @@
 import 'package:aniuaze/blocs/animal_bloc.dart';
 import 'package:aniuaze/models/user_model.dart';
 import 'package:aniuaze/screens/home_screen.dart';
-
 import 'package:aniuaze/widgets/images_widget.dart';
+import 'package:aniuaze/widgets/main_drawer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class FormScreen extends StatefulWidget {
   @override
@@ -29,7 +30,6 @@ class _FormScreenState extends State<FormScreen> {
     _selectedPorte = _dropdownMenuItems[0].value;
     UserModel().getUser().then((map){
       userData = map;
-      print(" Esté são os dados ${userData.documentID}");
     });
     super.initState();
   }
@@ -54,100 +54,120 @@ class _FormScreenState extends State<FormScreen> {
     });
   }
 
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBar(
-        title: Text('Cadastrar Animal'),
-        centerTitle: true,
-        actions: <Widget>[
-          StreamBuilder<bool>(
-              stream: _animalBloc.outLoading,
-              initialData: false,
-              builder: (context, snapshot) {
-                return IconButton(
-                    icon: Icon(Icons.save),
-                    onPressed: () {
-                      snapshot.data ? null : saveAnimal();
-                    });
-              })
-        ],
-      ),
-      body: Stack(
-        children: <Widget>[
-          Form(
-              key: _formKey,
-              child: StreamBuilder<Map>(
-                  stream: _animalBloc.outData,
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData) return Container();
-                    return ListView(
-                      padding: EdgeInsets.all(16),
-                      children: <Widget>[
-                        Row(
-                          children: <Widget>[
-                            Text(
-                              "Imagens",
-                              style: TextStyle(
-                                  color: Colors.black54, fontSize: 15),
-                            ),
-                            Text(
-                              " (Segure a imagem para deletar)",
-                              style: TextStyle(
-                                  color: Colors.black54, fontSize: 10),
-                            ),
-                          ],
+    return ScopedModelDescendant<UserModel>(
+
+        builder: (context, child, model) {
+          if(!model.isLoggedIn()){
+            return Scaffold(
+                appBar: AppBar(
+                  title: Text("Meus Animais"),
+                  centerTitle: true,
+                ),
+                drawer: MainDrawer(),
+                body: Center(
+                  child: Text("Entre ou Cadastre-se!",style: TextStyle(fontSize: 17),),
+                )
+            );
+          }
+          return Scaffold(
+            key: _scaffoldKey,
+            appBar: AppBar(
+              title: Text('Cadastrar Animal'),
+              centerTitle: true,
+              actions: <Widget>[
+                StreamBuilder<bool>(
+                    stream: _animalBloc.outLoading,
+                    initialData: false,
+                    builder: (context, snapshot) {
+                      return IconButton(
+                          icon: Icon(Icons.save),
+                          onPressed: () {
+                            snapshot.data ? null : saveAnimal();
+                          });
+                    })
+              ],
+            ),
+            body: Stack(
+              children: <Widget>[
+                Form(
+                    key: _formKey,
+                    child: StreamBuilder<Map>(
+                        stream: _animalBloc.outData,
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData) return Container();
+                          return ListView(
+                            padding: EdgeInsets.all(16),
+                            children: <Widget>[
+                              Row(
+                                children: <Widget>[
+                                  Text(
+                                    "Imagens",
+                                    style: TextStyle(
+                                        color: Colors.black54, fontSize: 15),
+                                  ),
+                                  Text(
+                                    " (Segure a imagem para deletar)",
+                                    style: TextStyle(
+                                        color: Colors.black54, fontSize: 10),
+                                  ),
+                                ],
+                              ),
+                              ImagesWidget(
+                                context: context,
+                                initialValue: snapshot.data["images"],
+                                onSaved: _animalBloc.saveImages,
+                                validator: _validateImages,
+                              ),
+                              TextFormField(
+                                initialValue: snapshot.data["name"],
+                                style: _fieldStyle,
+                                decoration: _buildDecoration("Nome"),
+                                onSaved: _animalBloc.saveName,
+                                validator: _validateName,
+                              ),
+                              SizedBox(
+                                height: 30,
+                              ),
+                              Text("Selecione o Porte"),
+                              SizedBox(
+                                height: 10.0,
+                              ),
+                              DropdownButton(
+                                value: _selectedPorte,
+                                items: _dropdownMenuItems,
+                                onChanged: onChangeDropdownItem,
+                              ),
+
+                              TextFormField(
+
+                                maxLines: 3,
+                                initialValue: snapshot.data["description"],
+                                style: _fieldStyle,
+                                decoration: _buildDecoration("Descrição"),
+                                onSaved: _animalBloc.saveDescription,
+                              ),
+                            ],
+                          );
+                        })),
+                StreamBuilder<bool>(
+                    stream: _animalBloc.outLoading,
+                    initialData: false,
+                    builder: (context, snapshot) {
+                      return IgnorePointer(
+                        ignoring: !snapshot.data,
+                        child: Container(
+                          color: snapshot.data ? Colors.black54 : Colors
+                              .transparent,
                         ),
-                        ImagesWidget(
-                          context: context,
-                          initialValue: snapshot.data["images"],
-                          onSaved: _animalBloc.saveImages,
-                          validator: _validateImages,
-                        ),
-                        TextFormField(
-                          initialValue: snapshot.data["name"],
-                          style: _fieldStyle,
-                          decoration: _buildDecoration("Nome"),
-                          onSaved: _animalBloc.saveName,
-                          validator: _validateName,
-                        ),
-                        SizedBox(
-                          height: 30,
-                        ),
-                        Text("Selecione o Porte"),
-                        SizedBox(
-                          height: 10.0,
-                        ),
-                        DropdownButton(
-                          value: _selectedPorte,
-                          items: _dropdownMenuItems,
-                          onChanged: onChangeDropdownItem,
-                        ),
-                        TextFormField(
-                          maxLines: 3,
-                          initialValue: snapshot.data["description"],
-                          style: _fieldStyle,
-                          decoration: _buildDecoration("Descrição"),
-                          onSaved: _animalBloc.saveDescription,
-                        ),
-                      ],
-                    );
-                  })),
-          StreamBuilder<bool>(
-              stream: _animalBloc.outLoading,
-              initialData: false,
-              builder: (context, snapshot) {
-                return IgnorePointer(
-                  ignoring: !snapshot.data,
-                  child: Container(
-                    color: snapshot.data ? Colors.black54 : Colors.transparent,
-                  ),
-                );
-              })
-        ],
-      ),
-    );
+                      );
+                    })
+              ],
+            ),
+          );
+        });
   }
 
   String _validateImages(List images) {
