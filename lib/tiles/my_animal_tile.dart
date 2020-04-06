@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 class MyAnimalTile extends StatelessWidget {
   final DocumentSnapshot snapshot;
   final String animalId;
-  //teste
 
   MyAnimalTile({this.snapshot, this.animalId});
 
@@ -50,7 +49,7 @@ class MyAnimalTile extends StatelessWidget {
                             FlatButton(
                                 onPressed: () {
                                   snapshot.reference.delete();
-                                  Navigator.of(context).push(
+                                  Navigator.of(context).pushReplacement(
                                       MaterialPageRoute(builder: (context) => HomeScreen()));
                                 },
                                 child: Text("Sim")),

@@ -36,6 +36,7 @@ class AnimalScreen extends StatelessWidget {
             ),
             _buildText('Nome:  ', '${snapshot.data['name']}'),
             _buildText('Porte:  ', '${snapshot.data['porte']}'),
+            _buildText('Contato:  ', '${snapshot.data['phone']}'),
             _buildText('Descrição:  ', '${snapshot.data['description']}'),
           ],
         ),
