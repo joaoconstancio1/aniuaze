@@ -1,5 +1,6 @@
 import 'package:aniuaze/models/user_model.dart';
 import 'package:aniuaze/tiles/animal_tile.dart';
+import 'package:aniuaze/tiles/my_animal_tile.dart';
 import 'package:aniuaze/widgets/main_drawer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -55,7 +56,7 @@ class _MyAnimalsState extends State<MyAnimals> {
                       drawer: MainDrawer(),
                       body: ListView(
                         children: snapshot.data.documents.map((doc) {
-                          return AnimalTile(doc);
+                          return MyAnimalTile(snapshot: doc,animalId: doc.documentID,);
                         }).toList(),
                       ),
                   );
