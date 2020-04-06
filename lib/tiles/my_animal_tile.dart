@@ -49,7 +49,7 @@ class MyAnimalTile extends StatelessWidget {
                             FlatButton(
                                 onPressed: () {
                                   snapshot.reference.delete();
-                                  Navigator.of(context).push(
+                                  Navigator.of(context).pushReplacement(
                                       MaterialPageRoute(builder: (context) => HomeScreen()));
                                 },
                                 child: Text("Sim")),

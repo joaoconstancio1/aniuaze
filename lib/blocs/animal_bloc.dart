@@ -25,6 +25,7 @@ class AnimalBloc extends BlocBase {
         "name": null,
         "porte": null,
         "description": null,
+        "phone": null,
         "userId": null,
         "date": null,
       };
@@ -46,6 +47,10 @@ class AnimalBloc extends BlocBase {
 
   void saveDescription(String description) {
     unsavedData["description"] = description;
+  }
+
+  void savePhone(String phone) {
+    unsavedData["phone"] = phone;
   }
 
   void saveUserId(String userId) {
@@ -97,9 +102,6 @@ class AnimalBloc extends BlocBase {
     }
   }
 
-  void deleteProduct() {
-    animal.reference.delete();
-  }
 
   @override
   void dispose() {

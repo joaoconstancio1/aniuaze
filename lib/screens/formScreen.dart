@@ -5,6 +5,7 @@ import 'package:aniuaze/widgets/images_widget.dart';
 import 'package:aniuaze/widgets/main_drawer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class FormScreen extends StatefulWidget {
@@ -21,7 +22,11 @@ class _FormScreenState extends State<FormScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final AnimalBloc _animalBloc;
 
-  _FormScreenState(DocumentSnapshot animal) : _animalBloc = AnimalBloc(animal: animal);
+  var maskPhone = new MaskTextInputFormatter(mask: '(##) #####-####', filter: { "#": RegExp(r'[0-9]') });
+
+
+  _FormScreenState(DocumentSnapshot animal)
+      : _animalBloc = AnimalBloc(animal: animal);
 
   List<Porte> _portes = Porte.getCompanies();
   List<DropdownMenuItem<Porte>> _dropdownMenuItems;
@@ -104,12 +109,7 @@ class _FormScreenState extends State<FormScreen> {
                       return ListView(
                         padding: EdgeInsets.all(16),
                         children: <Widget>[
-                          FlatButton(
-                            onPressed: () {
-                              print(snapshot);
-                            },
-                            child: Text('dasdad '),
-                          ),
+
                           Row(
                             children: <Widget>[
                               Text(
@@ -145,10 +145,20 @@ class _FormScreenState extends State<FormScreen> {
                             height: 10.0,
                           ),
                           DropdownButton(
-
                             value: _selectedPorte,
                             items: _dropdownMenuItems,
                             onChanged: onChangeDropdownItem,
+                          ),
+
+                          TextFormField(
+                            inputFormatters: [maskPhone],
+                            keyboardType: TextInputType.number,
+                            initialValue: snapshot.data["phone"],
+                            style: _fieldStyle,
+                            decoration: _buildDecoration("Celular"),
+                            validator: _validatePhone,
+
+                            onSaved: _animalBloc.savePhone,
                           ),
                           TextFormField(
                             maxLines: 3,
@@ -183,6 +193,12 @@ class _FormScreenState extends State<FormScreen> {
     return null;
   }
 
+
+  String _validatePhone(String text) {
+    if (text.isEmpty) return "Adicione um celular para contato";
+    return null;
+  }
+
   String _validateName(String text) {
     if (text.isEmpty) return "Informe o Nome do Animal";
     return null;
@@ -209,8 +225,8 @@ class _FormScreenState extends State<FormScreen> {
       _scaffoldKey.currentState.removeCurrentSnackBar();
 
       if (success == true)
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => HomeScreen()));
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => HomeScreen()));
       else {
         _scaffoldKey.currentState.showSnackBar(SnackBar(
           content: Text(
