@@ -4,9 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
-  String successMsg = '';
+  //String successMsg ="";
 
-  HomeScreen({this.successMsg});
+
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -15,10 +15,12 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
+
+
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => showSnackBar());
+    //WidgetsBinding.instance.addPostFrameCallback((_) => showSnackBar());
   }
 
   @override
@@ -51,7 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
         });
   }
 
-  void showSnackBar() {
+  /*void showSnackBar() {
     if (widget.successMsg != null) {
       _scaffoldKey.currentState.showSnackBar(SnackBar(
         content: Text(
@@ -61,5 +63,5 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Theme.of(context).primaryColor,
       ));
     }
-  }
+  }*/
 }

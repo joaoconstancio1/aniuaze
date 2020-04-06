@@ -8,8 +8,12 @@ import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class FormScreen extends StatefulWidget {
+  final DocumentSnapshot animal;
+
+  FormScreen({this.animal});
+
   @override
-  _FormScreenState createState() => _FormScreenState();
+  _FormScreenState createState() => _FormScreenState(animal);
 }
 
 class _FormScreenState extends State<FormScreen> {
@@ -17,23 +21,23 @@ class _FormScreenState extends State<FormScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final AnimalBloc _animalBloc;
 
-  _FormScreenState() : _animalBloc = AnimalBloc();
+  _FormScreenState(DocumentSnapshot animal) : _animalBloc = AnimalBloc(animal: animal);
 
   List<Porte> _portes = Porte.getCompanies();
   List<DropdownMenuItem<Porte>> _dropdownMenuItems;
   Porte _selectedPorte;
 
   DocumentSnapshot userData;
+
   @override
   void initState() {
     _dropdownMenuItems = buildDropdownMenuItems(_portes);
     _selectedPorte = _dropdownMenuItems[0].value;
-    UserModel().getUser().then((map){
+    UserModel().getUser().then((map) {
       userData = map;
     });
     super.initState();
   }
-
 
   List<DropdownMenuItem<Porte>> buildDropdownMenuItems(List portes) {
     List<DropdownMenuItem<Porte>> items = List();
@@ -54,120 +58,124 @@ class _FormScreenState extends State<FormScreen> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
-    return ScopedModelDescendant<UserModel>(
-
-        builder: (context, child, model) {
-          if(!model.isLoggedIn()){
-            return Scaffold(
-                appBar: AppBar(
-                  title: Text("Meus Animais"),
-                  centerTitle: true,
-                ),
-                drawer: MainDrawer(),
-                body: Center(
-                  child: Text("Entre ou Cadastre-se!",style: TextStyle(fontSize: 17),),
-                )
-            );
-          }
-          return Scaffold(
-            key: _scaffoldKey,
+    return ScopedModelDescendant<UserModel>(builder: (context, child, model) {
+      if (!model.isLoggedIn()) {
+        return Scaffold(
             appBar: AppBar(
-              title: Text('Cadastrar Animal'),
+              title: Text("Meus Animais"),
               centerTitle: true,
-              actions: <Widget>[
-                StreamBuilder<bool>(
-                    stream: _animalBloc.outLoading,
-                    initialData: false,
-                    builder: (context, snapshot) {
-                      return IconButton(
-                          icon: Icon(Icons.save),
-                          onPressed: () {
-                            snapshot.data ? null : saveAnimal();
-                          });
-                    })
-              ],
             ),
-            body: Stack(
-              children: <Widget>[
-                Form(
-                    key: _formKey,
-                    child: StreamBuilder<Map>(
-                        stream: _animalBloc.outData,
-                        builder: (context, snapshot) {
-                          if (!snapshot.hasData) return Container();
-                          return ListView(
-                            padding: EdgeInsets.all(16),
+            drawer: MainDrawer(),
+            body: Center(
+              child: Text(
+                "Entre ou Cadastre-se!",
+                style: TextStyle(fontSize: 17),
+              ),
+            ));
+      }
+      return Scaffold(
+        key: _scaffoldKey,
+        appBar: AppBar(
+          title: Text('Cadastrar Animal'),
+          centerTitle: true,
+          actions: <Widget>[
+            StreamBuilder<bool>(
+                stream: _animalBloc.outLoading,
+                initialData: false,
+                builder: (context, snapshot) {
+                  return IconButton(
+                      icon: Icon(Icons.save),
+                      onPressed: () {
+                        snapshot.data ? null : saveAnimal();
+                      });
+                })
+          ],
+        ),
+        body: Stack(
+          children: <Widget>[
+            Form(
+                key: _formKey,
+                child: StreamBuilder<Map>(
+                    stream: _animalBloc.outData,
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) return Container();
+                      return ListView(
+                        padding: EdgeInsets.all(16),
+                        children: <Widget>[
+                          FlatButton(
+                            onPressed: () {
+                              print(snapshot);
+                            },
+                            child: Text('dasdad '),
+                          ),
+                          Row(
                             children: <Widget>[
-                              Row(
-                                children: <Widget>[
-                                  Text(
-                                    "Imagens",
-                                    style: TextStyle(
-                                        color: Colors.black54, fontSize: 15),
-                                  ),
-                                  Text(
-                                    " (Segure a imagem para deletar)",
-                                    style: TextStyle(
-                                        color: Colors.black54, fontSize: 10),
-                                  ),
-                                ],
+                              Text(
+                                "Imagens",
+                                style: TextStyle(
+                                    color: Colors.black54, fontSize: 15),
                               ),
-                              ImagesWidget(
-                                context: context,
-                                initialValue: snapshot.data["images"],
-                                onSaved: _animalBloc.saveImages,
-                                validator: _validateImages,
-                              ),
-                              TextFormField(
-                                initialValue: snapshot.data["name"],
-                                style: _fieldStyle,
-                                decoration: _buildDecoration("Nome"),
-                                onSaved: _animalBloc.saveName,
-                                validator: _validateName,
-                              ),
-                              SizedBox(
-                                height: 30,
-                              ),
-                              Text("Selecione o Porte"),
-                              SizedBox(
-                                height: 10.0,
-                              ),
-                              DropdownButton(
-                                value: _selectedPorte,
-                                items: _dropdownMenuItems,
-                                onChanged: onChangeDropdownItem,
-                              ),
-
-                              TextFormField(
-
-                                maxLines: 3,
-                                initialValue: snapshot.data["description"],
-                                style: _fieldStyle,
-                                decoration: _buildDecoration("Descrição"),
-                                onSaved: _animalBloc.saveDescription,
+                              Text(
+                                " (Segure a imagem para deletar)",
+                                style: TextStyle(
+                                    color: Colors.black54, fontSize: 10),
                               ),
                             ],
-                          );
-                        })),
-                StreamBuilder<bool>(
-                    stream: _animalBloc.outLoading,
-                    initialData: false,
-                    builder: (context, snapshot) {
-                      return IgnorePointer(
-                        ignoring: !snapshot.data,
-                        child: Container(
-                          color: snapshot.data ? Colors.black54 : Colors
-                              .transparent,
-                        ),
+                          ),
+                          ImagesWidget(
+                            context: context,
+                            initialValue: snapshot.data["images"],
+                            onSaved: _animalBloc.saveImages,
+                            validator: _validateImages,
+                          ),
+                          TextFormField(
+                            initialValue: snapshot.data["name"],
+                            style: _fieldStyle,
+                            decoration: _buildDecoration("Nome"),
+                            onSaved: _animalBloc.saveName,
+                            validator: _validateName,
+                          ),
+                          SizedBox(
+                            height: 30,
+                          ),
+                          Text("Selecione o Porte"),
+                          SizedBox(
+                            height: 10.0,
+                          ),
+                          DropdownButton(
+
+                            value: _selectedPorte,
+                            items: _dropdownMenuItems,
+                            onChanged: onChangeDropdownItem,
+                          ),
+                          TextFormField(
+                            maxLines: 3,
+                            initialValue: snapshot.data["description"],
+                            style: _fieldStyle,
+                            decoration: _buildDecoration("Descrição"),
+                            onSaved: _animalBloc.saveDescription,
+                          ),
+                        ],
                       );
-                    })
-              ],
-            ),
-          );
-        });
+                    })),
+            StreamBuilder<bool>(
+                stream: _animalBloc.outLoading,
+                initialData: false,
+                builder: (context, snapshot) {
+                  return IgnorePointer(
+                    ignoring: !snapshot.data,
+                    child: Container(
+                      color:
+                          snapshot.data ? Colors.black54 : Colors.transparent,
+                    ),
+                  );
+                })
+          ],
+        ),
+      );
+    });
   }
 
   String _validateImages(List images) {
@@ -200,15 +208,13 @@ class _FormScreenState extends State<FormScreen> {
 
       _scaffoldKey.currentState.removeCurrentSnackBar();
 
-      if(success == true)
+      if (success == true)
         Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => HomeScreen(
-              successMsg: "Animal Cadastrado!",
-            )));
-      else{
+            builder: (context) => HomeScreen()));
+      else {
         _scaffoldKey.currentState.showSnackBar(SnackBar(
           content: Text(
-           "Erro ao salvar!",
+            "Erro ao salvar!",
             style: TextStyle(color: Colors.white),
           ),
           backgroundColor: Theme.of(context).primaryColor,
